@@ -16,9 +16,9 @@ const nextConfig = {
   swcMinify: true,
   
   // Experimental features for better performance
-  experimental: {
-    optimizeCss: true,
-  },
+  // experimental: {
+  //   optimizeCss: true, // Disabled for Vercel deployment compatibility
+  // },
 }
 
 export default nextConfig
