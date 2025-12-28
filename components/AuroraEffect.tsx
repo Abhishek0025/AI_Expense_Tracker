@@ -22,8 +22,8 @@ function AuroraOrb({
   isHovering: boolean
 }) {
   // Apply offset to base position
-  const x = useTransform(baseX, (latest) => latest + offset.x)
-  const y = useTransform(baseY, (latest) => latest + offset.y)
+  const x = useTransform(baseX, (latest: number) => latest + offset.x)
+  const y = useTransform(baseY, (latest: number) => latest + offset.y)
 
   return (
     <motion.div
