@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  transactions  Transaction[]
+  aiRuns        AiRun[]
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id                  String        @id @default(cuid())
+  userId              String
+  date                DateTime
+  description         String
+  amountCents         Int
+  merchant            String?
+  categoryId          String?
+  aiRunId             String?
+  aiConfidence        Float?
+  aiReasoning         String?
+  aiSuggestedCategory String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  aiRun         AiRun?        @relation(fields: [aiRunId], references: [id], onDelete: SetNull)
+  
+  @@index([userId, date])
+  @@index([userId, categoryId])
+}
+
+model AiRun {
+  id            String        @id @default(cuid())
+  userId        String
+  type          String        // e.g., "categorize"
+  outputJson    String        @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+  
+  @@index([userId, type])
+}
+
